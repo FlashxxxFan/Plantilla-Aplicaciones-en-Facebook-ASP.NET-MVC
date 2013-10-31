@@ -1,0 +1,35 @@
+﻿@model WebApp.Models.User
+
+@using (Html.BeginForm("NewUser", "Home", FormMethod.Post, new { id = "newuser" }))
+{
+    @Html.HiddenFor(x => x.IdUser, new { id = "idfacebook" })
+    @Html.TextBoxFor(x => x.Email, new { id = "email", autocomplete = "false" })
+    @Html.TextBoxFor(x => x.FirstName, new { id = "firstname", autocomplete = "false" })
+    @Html.TextBoxFor(x => x.LastName, new { id = "lastname", autocomplete = "false" })
+    @Html.TextBoxFor(x => x.Document, new { id = "document", autocomplete = "false" })
+    <a id="register" href="#">Registrar</a>
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        FB.getLoginStatus(function (response) {
+            if (response.status === 'connected') {
+                FB.api('/me', function (response) {
+                    $("#idfacebook").val(response.id);
+                    if (response.email) {
+                        $("#email").val(response.email).attr('readonly', true);
+                    }
+                    $("#firstname").val(response.first_name);
+                    $("#lastname").val(response.last_name);
+                }, { scope: 'email' });
+            } else {
+                window.location.reload();
+            }
+        });
+        $("#register").on("click", function (e) {
+            e.preventDefault();
+            $("#newuser").submit();
+        });
+    </script>
+}

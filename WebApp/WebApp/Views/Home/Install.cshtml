@@ -1,0 +1,28 @@
+﻿<div class="loading"></div>
+<div class="instalar" style="display:none;">
+    <a id="install" href="#">Instalar Aplicacion</a>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function WindowRedirect(accessToken) {
+            window.location = '@(Url.Action("Install"))?accessToken=' + accessToken;
+        }
+        FB.getLoginStatus(function (response) {
+            if (response.status === 'connected') {
+                WindowRedirect(response.authResponse.accessToken);
+            } else {
+                $(".loading").hide();
+                $(".instalar").fadeIn();
+            }
+        });
+        $("#install").on("click", function (e) {
+            e.preventDefault();
+            FB.login(function (response) {
+                if (response.authResponse) {
+                    WindowRedirect(response.authResponse.accessToken);
+                }
+            }, { scope: 'email' });
+        });
+    </script>
+}
